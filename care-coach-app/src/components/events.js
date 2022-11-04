@@ -1,4 +1,4 @@
-import {Table, TextInput, Checkbox, Button, Group, Box } from '@mantine/core';
+import {Table, TextInput, Checkbox, Button, Group, Box, Center} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import {useState } from 'react';
 
@@ -79,7 +79,6 @@ export const Events = () => {
 	  <td>{element.time}</td>
 	</tr>
     ));
-
 	return (
 		<div>
 		<h1>Add Events</h1>
@@ -93,30 +92,27 @@ export const Events = () => {
 		</thead>
 		<tbody>{rows}</tbody>
 		</Table>
-		<Box sx={{ maxWidth: 300 }} mx="auto">
-					<form onSubmit={form.onSubmit((values) => addEvent(values.device, values.event))}>
-						<TextInput
-							withAsterisk
-							label="device"
-							placeholder="enter your device name"
-							{...form.getInputProps('device')} />
-						<TextInput
-							withAsterisk
-							label="event"
-							placeholder="enter your event name"
-							{...form.getInputProps('event')} />
-						<Checkbox
-							mt="md"
-							label="Submit event"
-							{...form.getInputProps('checkbox', { type: 'checkbox' })} />
-						<Group position="right" mt="md">
-							<Button type="submit">Submit</Button>
-						</Group>
-					</form>
-				</Box>
-				<Box sx={{ maxWidth: 300 }} mx="auto">
-						<Button onClick={sortedTable}>Sort Table</Button>
-					</Box>
+		<Box sx={{ maxWidth: 300}} mx="auto">
+			<form onSubmit={form.onSubmit((values) => addEvent(values.device, values.event))}>
+				<TextInput
+					withAsterisk
+					label="device"
+					placeholder="enter your device name"
+					{...form.getInputProps('device')} />
+				<TextInput
+					withAsterisk
+					label="event"
+					placeholder="enter your event name"
+					{...form.getInputProps('event')} />
+				<Checkbox
+					mt="md"
+					label="Submit event"
+					{...form.getInputProps('checkbox', { type: 'checkbox' })} />
+				<Group position="middle" mt="md">
+					<Button type="submit">Submit</Button>
+				</Group>
+			</form>
+		</Box>
 		{ sortTable  ? 
 			<>
 				<h1>Sort Events</h1><Table>
@@ -131,6 +127,12 @@ export const Events = () => {
 					</Table>
 					</> : null
 		}
+		<Box sx={{ maxWidth: 500}} mx="auto">
+		<Center style={{ width: 300, height: 200 }}>
+			<Button onClick={sortedTable}>Sort Table</Button>
+		</Center>
+		</Box>
+		
 	</div>
 	)	
 }
