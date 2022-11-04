@@ -1,5 +1,6 @@
 import {Table, TextInput, Checkbox, Button, Group, Box } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import {useState } from 'react';
 
 
 // POST: {DOMAIN}/events/ 
@@ -10,7 +11,7 @@ import { useForm } from '@mantine/form';
 let storage = {};
 
 export const Events = () => {
-
+	const [sortTable, setIsTableSorted] = useState(null);
 
 	const sort = (eventType) => {
 		let sortOrder; 
@@ -18,7 +19,7 @@ export const Events = () => {
 			sortOrder = 1
 		} else if(eventType === 'online') {
 			sortOrder = 2
-		} else if(eventType === 'online') {
+		} else if(eventType === 'offline') {
 			sortOrder = 3; 
 		} else {
 			sortOrder = 0;
@@ -30,7 +31,6 @@ export const Events = () => {
 		const time = Date.now();
 		const sortOrder = sort(event);
 		storage[device] = {device, event, time, sortOrder};
-		console.log(storage);
 	  }
 	  const form = useForm({
 		initialValues: {
@@ -59,6 +59,7 @@ export const Events = () => {
 		let counter = 1; 
 		let sorted = [];
 		for(let i = 0; i < 4; i++) {
+			// eslint-disable-next-line no-loop-func, array-callback-return
 			Object.keys(storage).map((element) => {
 				if(storage[element].sortOrder === counter) {
 					sorted.push(storage[element])
@@ -66,20 +67,18 @@ export const Events = () => {
 			})
 			counter++;
 		}
-		console.log(sorted);
+		setIsTableSorted(sorted)
 		return sorted
 	};
-	
-	
-	const sorted = sortedTable(); 
-	const sortRows = sorted.map((element) => 
-	  (
-	  <tr key={element}>
-		<td>{element.device}</td>
-		<td>{element.event}</td>
-		<td>{element.time}</td>
-	  </tr>
-	));
+
+	const sortRows = sortTable?.map((element) => 
+	(
+	<tr key={element}>
+	  <td>{element.device}</td>
+	  <td>{element.event}</td>
+	  <td>{element.time}</td>
+	</tr>
+    ));
 
 	return (
 		<div>
@@ -95,45 +94,44 @@ export const Events = () => {
 		<tbody>{rows}</tbody>
 		</Table>
 		<Box sx={{ maxWidth: 300 }} mx="auto">
-			<form onSubmit={form.onSubmit((values) => addEvent(values.device, values.event))}>
-			<TextInput
-				withAsterisk
-				label="device"
-				placeholder="enter your device name"
-				{...form.getInputProps('device')}
-			/>
-			<TextInput
-				withAsterisk
-				label="event"
-				placeholder="enter your event name"
-				{...form.getInputProps('event')}
-			/>
-			<Checkbox
-				mt="md"
-				label="Submit event"
-				{...form.getInputProps('checkbox', { type: 'checkbox' })}
-			/>
-			<Group position="right" mt="md">
-				<Button type="submit">Submit</Button>
-			</Group>
-			</form>
-		</Box>
-		<h1>Sort Events</h1>
-		<Table>
-		<thead>
-		<tr>
-			<th>Device</th>
-			<th>Event</th>
-			<th>Timestamp</th>
-		</tr>
-		</thead>
-		<tbody>{sortRows}</tbody>
-		</Table>
-		<Box sx={{ maxWidth: 300 }} mx="auto">
-			<Button onClick={sortedTable}>Sort Table</Button>
-		</Box>
+					<form onSubmit={form.onSubmit((values) => addEvent(values.device, values.event))}>
+						<TextInput
+							withAsterisk
+							label="device"
+							placeholder="enter your device name"
+							{...form.getInputProps('device')} />
+						<TextInput
+							withAsterisk
+							label="event"
+							placeholder="enter your event name"
+							{...form.getInputProps('event')} />
+						<Checkbox
+							mt="md"
+							label="Submit event"
+							{...form.getInputProps('checkbox', { type: 'checkbox' })} />
+						<Group position="right" mt="md">
+							<Button type="submit">Submit</Button>
+						</Group>
+					</form>
+				</Box>
+				<Box sx={{ maxWidth: 300 }} mx="auto">
+						<Button onClick={sortedTable}>Sort Table</Button>
+					</Box>
+		{ sortTable  ? 
+			<>
+				<h1>Sort Events</h1><Table>
+						<thead>
+							<tr>
+								<th>Device</th>
+								<th>Event</th>
+								<th>Timestamp</th>
+							</tr>
+						</thead>
+						<tbody>{sortRows}</tbody>
+					</Table>
+					</> : null
+		}
 	</div>
-
 	)	
 }
 
